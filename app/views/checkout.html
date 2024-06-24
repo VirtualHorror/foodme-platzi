@@ -1,79 +1,73 @@
-<form name="form">
-  <div class="container fm-panel fm-checkout">
-    <h4>Menu</h4>
-
-    <div class="row">
-      <div class="span6">
-        <h5>Deliver To:</h5>
-        <div>{{customer.name}}</div>
-        <div>{{customer.address}}</div>
-        <a href="#/customer">Change</a>
-      </div>
-      <div class="span6">
-        <h5>Payment:</h5>
-        <div class="control-group">
-          <select name="ccType" class="input-medium"
-                  required
-                  ng-model="cart.payment.type">
+<div class="checkout-container">
+  <div class="checkout-header">
+    <h2>Checkout</h2>
+    <p>Please review your order and provide payment details below.</p>
+  </div>
+  <div class="checkout-body">
+    <div class="delivery-info">
+      <h4>Deliver To:</h4>
+      <p>{{customer.name}}</p>
+      <p>{{customer.address}}</p>
+      <a href="#/customer" class="change-address">Change</a>
+    </div>
+    <div class="payment-info">
+      <h4>Payment:</h4>
+      <form name="paymentForm" novalidate>
+        <div class="form-group">
+          <label for="ccType">Card Type</label>
+          <select name="ccType" class="form-control" required ng-model="cart.payment.type">
             <option value="visa">Visa</option>
             <option value="mc">MasterCard</option>
             <option value="discover">Discover</option>
           </select>
         </div>
-        <div class="control-group">
-          <input type="text" name="ccNum"
-                 placeholder="Card number"
-                 maxlength="16"
-                 required ng-pattern="/\d{16}/"
-                 ng-model="cart.payment.number">
+        <div class="form-group">
+          <label for="ccNum">Card Number</label>
+          <input type="text" name="ccNum" class="form-control" placeholder="Card number" maxlength="16" required ng-pattern="/\d{16}/" ng-model="cart.payment.number">
         </div>
-        <span class="control-group">
-          <input type="text" name="ccExp" placeholder="mm/yyyy" class="input-medium"
-                 maxlength="16"
-                 required ng-pattern="/\d\d\/\d\d\d\d/"
-                 ng-model="cart.payment.expire">
-        </span>
-        <span class="control-group">
-          <input type="text" name="ccCvc" placeholder="CVC" class="input-small"
-                 maxlength="4"
-                 required ng-pattern="/\d{3,4}/"
-                 ng-model="cart.payment.cvc">
-        </span>
-      </div>
+        <div class="form-group">
+          <label for="ccExp">Expiration</label>
+          <input type="text" name="ccExp" class="form-control" placeholder="mm/yyyy" maxlength="7" required ng-pattern="/\d\d\/\d\d\d\d/" ng-model="cart.payment.expire">
+        </div>
+        <div class="form-group">
+          <label for="ccCvc">CVC</label>
+          <input type="text" name="ccCvc" class="form-control" placeholder="CVC" maxlength="4" required ng-pattern="/\d{3,4}/" ng-model="cart.payment.cvc">
+        </div>
+      </form>
     </div>
-
-    <div>
-      <table class="table table-hover table-striped">
-        <tr>
-          <th>Qty</th>
-          <th>Description</th>
-          <th>Price</th>
-          <th>Subtotal</th>
-          <th></th>
-        </tr>
-        <tr ng-repeat="item in cart.items">
-          <td><input type="number" ng-model="item.qty"></td>
-          <td>{{item.name}}</td>
-          <td>{{item.price | currency}}</td>
-          <td>{{item.price * item.qty | currency}}</td>
-          <td><a href ng-click="cart.remove(item)"><i class="icon-remove-sign"></i></a></td>
-        </tr>
-        <tr>
-          <th></th>
-          <th></th>
-          <th>Total:</th>
-          <th>{{ cart.total() | currency }}</th>
-          <th></th>
-        </tr>
+    <div class="order-summary">
+      <h4>Order Summary</h4>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Qty</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in cart.items">
+            <td><input type="number" ng-model="item.qty" class="form-control"></td>
+            <td>{{item.name}}</td>
+            <td>{{item.price | currency}}</td>
+            <td>{{item.price * item.qty | currency}}</td>
+            <td><a href ng-click="cart.remove(item)" class="remove-item"><i class="icon-remove-sign"></i></a></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="3">Total:</th>
+            <th colspan="2">{{ cart.total() | currency }}</th>
+          </tr>
+        </tfoot>
       </table>
-
-      <div class="fm-right">
-        <a href="#/menu/{{restaurantId}}" class="btn">Back to Menu</a>
-        <a href class="btn btn-danger" ng-click="cart.reset()">Clear Cart</a>
-        <button class="btn btn-primary"
-                ng-disabled="form.$invalid || !cart.items.length || submitting"
-                ng-click="purchase()">Purchase</button>
-      </div>
+    </div>
+    <div class="checkout-actions">
+      <a href="#/menu/{{restaurantId}}" class="btn btn-secondary">Back to Menu</a>
+      <a href class="btn btn-warning" ng-click="cart.reset()">Clear Cart</a>
+      <button class="btn btn-success" ng-disabled="paymentForm.$invalid || !cart.items.length || submitting" ng-click="purchase()">Complete Purchase</button>
     </div>
   </div>
-</form>
+</div>
